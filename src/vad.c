@@ -87,18 +87,18 @@ VAD_STATE vad(VAD_DATA *vad_data, float *x) {
   Features f = compute_features(x, vad_data->frame_length);
   vad_data->last_feature = f.p; /* save feature, in case you want to show */
 
-  switch (vad_data->state) {
-  case ST_INIT:
+  switch (vad_data->state) { //Va a tomar una decision distinta en cada estado previo, si previamente estabamos en voz, o vamos a silencio o no hacemos nada
+  case ST_INIT: //estado inicial siempre vamos a silencio
     vad_data->state = ST_SILENCE;
     break;
 
   case ST_SILENCE:
-    if (f.p > 0.95) // s'haurà de canviar 
+    if (f.p > 0.95) //f.p ->  f:feature   p:potencia, si la potencia es mayor 0.95 -> pasamos a voz
       vad_data->state = ST_VOICE;
     break;
 
   case ST_VOICE:
-    if (f.p < 0.01)
+    if (f.p < 0.01) // si la potencia es menor que 0.1, es silencio
       vad_data->state = ST_SILENCE;
     break;
 

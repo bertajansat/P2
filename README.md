@@ -135,8 +135,7 @@ Ejercicios
 - Etiquete manualmente los segmentos de voz y silencio del fichero grabado al efecto. Inserte, a 
   continuación, una captura de `wavesurfer` en la que se vea con claridad la señal temporal, el contorno de
   potencia y la tasa de cruces por cero, junto con el etiquetado manual de los segmentos.
-
-FER PRIMER EXERCICI
+![image](https://user-images.githubusercontent.com/127047656/226392329-a44aa344-3ffe-4082-943e-843a8a218192.png)
 
 
 
@@ -144,11 +143,16 @@ FER PRIMER EXERCICI
 
 	* Incremento del nivel potencia en dB, respecto al nivel correspondiente al silencio inicial, para
 	  estar seguros de que un segmento de señal se corresponde con voz.
+	  
+	  Tomando un incremento de aproximadamente unos 10 dB respecto el silencio inicial conseguimos distinguir una señal de voz respecto de una de silencio. 
 
 	* Duración mínima razonable de los segmentos de voz y silencio.
+	
+	Para poder considerar que una parte de la señal se corresponde a un silencio tomamos una duración mínima de Silence Time = 70 ms.
+	En el caso de la voz, el segmento debe tener una duración mínima de Voice Time = 250 ms.
 
 	* ¿Es capaz de sacar alguna conclusión a partir de la evolución de la tasa de cruces por cero?
-
+	Con la tasa de cruces por cero podemos obtener en algunos casos si se trata de un segmento de voz o de silencio, aún así nos da mucha menos información que la 	       potencia. Lo que sí nos permite saber es si los sonidos escuchados son sordos o sonoros, ya que si se trata de un sonido sonoro este valor aumentará 		considerablemente.
 
 ### Desarrollo del detector de actividad vocal
 

@@ -135,7 +135,8 @@ Ejercicios
 - Etiquete manualmente los segmentos de voz y silencio del fichero grabado al efecto. Inserte, a 
   continuación, una captura de `wavesurfer` en la que se vea con claridad la señal temporal, el contorno de
   potencia y la tasa de cruces por cero, junto con el etiquetado manual de los segmentos.
-![image](https://user-images.githubusercontent.com/127047656/226392329-a44aa344-3ffe-4082-943e-843a8a218192.png)
+![image](https://user-images.githubusercontent.com/127047656/227724414-81885c86-b42f-4967-bb84-1aed22b53af5.png)
+
 
 
 

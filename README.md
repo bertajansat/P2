@@ -154,7 +154,7 @@ Ejercicios
 
 	* ¿Es capaz de sacar alguna conclusión a partir de la evolución de la tasa de cruces por cero?
 	
-	  Con la tasa de cruces por cero podemos obtener en algunos casos si se trata de un segmento de voz o de silencio, aún así nos da mucha menos información que             la potencia. Lo que sí nos permite saber es si los sonidos escuchados son sordos o sonoros, ya que si se trata de un sonido sonoro este valor aumentará 	    considerablemente.
+	  Con la tasa de cruces por cero podemos obtener en algunos casos si se trata de un segmento de voz o de silencio, aún así nos da mucha menos información que             la potencia. Lo que sí nos permite saber es si los sonidos escuchados son sordos o sonoros, ya que si se trata de un valor sordo, el número de cruces por 	      cero será mayor, en el caso de un sonido sonoro, el número de cruces por cero disminuye. 
 
 ### Desarrollo del detector de actividad vocal
 

@@ -9,6 +9,11 @@ Options:
    -i FILE, --input-wav=FILE   WAVE file for voice activity detection
    -o FILE, --output-vad=FILE  Label file with the result of VAD
    -w FILE, --output-wav=FILE  WAVE file with silences cleared
+   -0 INT, --alfa0=INT   Margen para k1, k2 [default: 3]
+   -1 INT, --alfa1=INT   Margen para los contadores count_n, count_ms y count_ms [default: 2]
+   -s INT, --count_ms=INT   Contador de frames de maybe silence [default: 15]
+   -m INT, --count_mv=INT   Contador de frames de maybe voice [default: 5]
+   -f INT, --init_frames=INT   Contador de frames iniciales para calcular p0 y zcr0 [default: 7]
    -v, --verbose  Show debug information
    -h, --help     Show this screen
    --version      Show the version of the project

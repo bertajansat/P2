@@ -1,7 +1,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
-
+#include "pav_analysis.h"
 #include "vad.h"
 
 const float FRAME_TIME = 10.0F; /* in ms. */
@@ -13,7 +13,7 @@ const float FRAME_TIME = 10.0F; /* in ms. */
  */
 
 const char *state_str[] = {
-  "UNDEF", "S", "V", "INIT"
+  "UNDEF", "S", "V", "INIT", "MS", "MV"
 };
 
 const char *state2str(VAD_STATE st) {
@@ -42,7 +42,10 @@ Features compute_features(const float *x, int N) {
    * For the moment, compute random value between 0 and 1 
    */
   Features feat;
-  feat.zcr = feat.p = feat.am = (float) rand()/RAND_MAX;
+
+  feat.zcr=compute_zcr(x,N,16000);
+  feat.p=compute_power(x,N);
+  feat.am=compute_am(x,N);
   return feat;
 }
 
@@ -50,11 +53,19 @@ Features compute_features(const float *x, int N) {
  * TODO: Init the values of vad_data
  */
 
-VAD_DATA * vad_open(float rate) {
+VAD_DATA * vad_open(float rate,int alfa0,int alfa1, int count_ms, int count_mv, int init_frames) {
   VAD_DATA *vad_data = malloc(sizeof(VAD_DATA));
   vad_data->state = ST_INIT;
+  vad_data->alfa0=alfa0;
+  vad_data->alfa1=alfa1;
+  vad_data->count_ms=count_ms; // num. máximo de tramas de Maybe Silence
+  vad_data->count_mv=count_mv; // num. máximo de tramas de Maybe Voice
+  vad_data->count_n=init_frames; //num. máximo de tramas iniciales para calulcar la potència y tasa de cruces por cero iniciales (p0 y zcr0)
+  vad_data->count_undef=0; // num. máximo de tramas indefinidas (No son voz ni silencio)
+  vad_data->count_init=0; // num. de tramas iniciales
   vad_data->sampling_rate = rate;
   vad_data->frame_length = rate * FRAME_TIME * 1e-3;
+  vad_data->last_state=ST_UNDEF; // Establecemos que el estado anterior es indefinido
   return vad_data;
 }
 
@@ -62,8 +73,13 @@ VAD_STATE vad_close(VAD_DATA *vad_data) {
   /* 
    * TODO: decide what to do with the last undecided frames
    */
-  VAD_STATE state = vad_data->state;
-
+  VAD_STATE state;
+  if (vad_data->state==ST_MAYBEVOICE)
+    state=ST_VOICE;
+  else if(vad_data->state==ST_MAYBESILENCE)
+    state=ST_SILENCE;
+  else 
+    state=vad_data->state;
   free(vad_data);
   return state;
 }
@@ -77,7 +93,7 @@ unsigned int vad_frame_size(VAD_DATA *vad_data) {
  * using a Finite State Automata
  */
 
-VAD_STATE vad(VAD_DATA *vad_data, float *x) {
+VAD_STATE vad(VAD_DATA *vad_data, float *x) { 
 
   /* 
    * TODO: You can change this, using your own features,
@@ -87,28 +103,74 @@ VAD_STATE vad(VAD_DATA *vad_data, float *x) {
   Features f = compute_features(x, vad_data->frame_length);
   vad_data->last_feature = f.p; /* save feature, in case you want to show */
 
-  switch (vad_data->state) { //Va a tomar una decision distinta en cada estado previo, si previamente estabamos en voz, o vamos a silencio o no hacemos nada
-  case ST_INIT: //estado inicial siempre vamos a silencio
-    vad_data->state = ST_SILENCE;
-    break;
+  switch (vad_data->state) {
+    
+  case ST_INIT:
 
-  case ST_SILENCE:
-    if (f.p > 0.95) //f.p ->  f:feature   p:potencia, si la potencia es mayor 0.95 -> pasamos a voz
-      vad_data->state = ST_VOICE;
-    break;
+    if(vad_data->count_init < vad_data->count_n - vad_data->alfa1){ 
+      vad_data->count_init++;
+      vad_data->zcr0+=f.zcr;
+      vad_data->p0+=pow(10,f.p/10);
+    }
+    else{
+      vad_data->zcr0=(vad_data->zcr0)/vad_data->count_init; // Tasa cruces por cero media inicial
+      vad_data->p0=10*log10 (vad_data->p0/vad_data->count_n); // Potencia media inicial 
+      vad_data->k1=vad_data->p0+2*(vad_data->alfa0); // threshold 1
+      vad_data->k2=vad_data->k1+vad_data->alfa0; // threshold 2
+      vad_data->state = ST_SILENCE;
+    }
+    vad_data->last_state=ST_INIT;
+  break;
+
+  case ST_SILENCE: 
+   vad_data->count_undef=1; // Se reinicia el numero de tramas indefinidas (ni silencio ni voz)
+    if (f.p > vad_data->k1 ){
+      vad_data->state = ST_MAYBEVOICE;
+    }
+    vad_data->last_state=ST_SILENCE;
+  break;
 
   case ST_VOICE:
-    if (f.p < 0.01) // si la potencia es menor que 0.1, es silencio
-      vad_data->state = ST_SILENCE;
-    break;
+  vad_data->count_undef=1; // Se reinicia el numero de tramas indefinidas (ni silencio ni voz)
+    if (f.p < vad_data->k1 && f.zcr < vad_data->zcr0){
+      vad_data->state = ST_MAYBESILENCE;
+    }
+    vad_data->last_state=ST_VOICE;
+  break;
+
+  case ST_MAYBESILENCE:
+  vad_data->count_undef++; // Se aumenta el numero de tramas indefinidas (ni silencio ni voz)
+   if(f.p < vad_data->p0)
+      vad_data->state=ST_SILENCE;
+   if(f.p > vad_data->k2){
+      vad_data->state=ST_VOICE;
+    }
+   if(vad_data->count_undef > vad_data->count_ms + 2*(vad_data->alfa1) ) 
+      vad_data->state=ST_SILENCE;
+    vad_data->last_state=ST_MAYBESILENCE;
+  break;
+
+  case ST_MAYBEVOICE:
+  vad_data->count_undef++; // Se aumenta el numero de tramas indefinidas (ni silencio ni voz)
+   if(f.p< vad_data->k1)
+      vad_data->state=ST_SILENCE;
+   if(f.p>vad_data->k2){ 
+      vad_data->state=ST_VOICE;
+    }
+   if(vad_data->count_undef > vad_data->count_mv + 2*(vad_data->alfa1)){  
+      vad_data->state=ST_VOICE;
+   }
+   vad_data->last_state=ST_MAYBEVOICE;
+  break;
 
   case ST_UNDEF:
     break;
   }
 
-  if (vad_data->state == ST_SILENCE ||
-      vad_data->state == ST_VOICE)
+  if (vad_data->state == ST_SILENCE ||vad_data->state == ST_VOICE ||vad_data->state == ST_MAYBESILENCE || vad_data->state == ST_MAYBEVOICE)
     return vad_data->state;
+  else if(vad_data->state==ST_INIT)
+    return ST_SILENCE;
   else
     return ST_UNDEF;
 }

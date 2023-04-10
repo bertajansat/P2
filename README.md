@@ -161,7 +161,7 @@ Ejercicios
 - Complete el código de los ficheros de la práctica para implementar un detector de actividad vocal en
   tiempo real tan exacto como sea posible. Tome como objetivo la maximización de la puntuación-F `TOTAL`.
 
-Primeramente hemos usado un primer umbral, p0, que ha sido la potencia media durante las N_init primeras muestras (en nuestor caso lo hemos nombrado como count_init). Luego hemos puesto un segundo umbral, k1, que nos dará la decisión de si la trama se corresponde a voz o silencio, el cual se basa en comparar el nivel de potencia. La decisión más razonable ha sido k1 = p0 + alfa0.
+Primeramente hemos usado un primer umbral, p0, que ha sido la potencia media durante las N_init primeras muestras (en nuestor caso lo hemos nombrado como count_init). Luego hemos puesto un segundo umbral, k1, que nos dará la decisión de si la trama se corresponde a voz o silencio, el cual se basa en comparar el nivel de potencia. La decisión más razonable ha sido k1 = p0 + 2*alfa0.
 
 Para mejorar el sistem de detección de voz, hemos puesto una cierta histéresis en la decisión, para ello aplicamos otro umbral, k2 = k1 + alfa0.
 

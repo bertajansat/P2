@@ -196,6 +196,7 @@ Con todas las modificaciones anteriormente dichas, hemos obenido una F-score de 
   una captura de pantalla en la que se vea el mensaje de ayuda del programa.
   
   Hemos usado `docopt_c`para realizar la gestión de los valores:
+  
   	-alfa0, con un valor default de 3
 	
 	-alfa1, con un valor default de 2

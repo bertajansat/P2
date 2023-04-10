@@ -135,31 +135,54 @@ Ejercicios
 - Etiquete manualmente los segmentos de voz y silencio del fichero grabado al efecto. Inserte, a 
   continuación, una captura de `wavesurfer` en la que se vea con claridad la señal temporal, el contorno de
   potencia y la tasa de cruces por cero, junto con el etiquetado manual de los segmentos.
+![image](https://user-images.githubusercontent.com/127047656/227724414-81885c86-b42f-4967-bb84-1aed22b53af5.png)
+
+
 
 
 - A la vista de la gráfica, indique qué valores considera adecuados para las magnitudes siguientes:
 
 	* Incremento del nivel potencia en dB, respecto al nivel correspondiente al silencio inicial, para
 	  estar seguros de que un segmento de señal se corresponde con voz.
+	  
+	  Tomando un incremento de aproximadamente unos 10 dB respecto el silencio inicial conseguimos distinguir una señal de voz respecto de una de silencio. 
 
 	* Duración mínima razonable de los segmentos de voz y silencio.
+	
+	  Para poder considerar que una parte de la señal se corresponde a un silencio tomamos una duración mínima de Silence Time = 70 ms.
+	  En el caso de la voz, el segmento debe tener una duración mínima de Voice Time = 250 ms.
 
 	* ¿Es capaz de sacar alguna conclusión a partir de la evolución de la tasa de cruces por cero?
-
+	
+	  Con la tasa de cruces por cero podemos obtener en algunos casos si se trata de un segmento de voz o de silencio, aún así nos da mucha menos información que             la potencia. Lo que sí nos permite saber es si los sonidos escuchados son sordos o sonoros, ya que si se trata de un valor sordo, el número de cruces por 	      cero será mayor, en el caso de un sonido sonoro, el número de cruces por cero disminuye. 
 
 ### Desarrollo del detector de actividad vocal
 
 - Complete el código de los ficheros de la práctica para implementar un detector de actividad vocal en
   tiempo real tan exacto como sea posible. Tome como objetivo la maximización de la puntuación-F `TOTAL`.
 
+Primeramente hemos usado un primer umbral, p0, que ha sido la potencia media durante las N_init primeras muestras (en nuestor caso lo hemos nombrado como count_init). Luego hemos puesto un segundo umbral, k1, que nos dará la decisión de si la trama se corresponde a voz o silencio, el cual se basa en comparar el nivel de potencia. La decisión más razonable ha sido k1 = p0 + 2*alfa0.
+
+Para mejorar el sistem de detección de voz, hemos puesto una cierta histéresis en la decisión, para ello aplicamos otro umbral, k2 = k1 + alfa0.
+
+Los valores alfa0 y alfa1 óptimos han sido 3 y 2.
+
+Además hemos utilizado los cruces por zero (zcr) para decidir si una trama es voz o no lo es. 
+
+Con todas las modificaciones anteriormente mencionadas, hemos obenido una F-score de 93.103% en los datos db.v4.
+
 - Inserte una gráfica en la que se vea con claridad la señal temporal, el etiquetado manual y la detección
   automática conseguida para el fichero grabado al efecto. 
+  ![image](https://user-images.githubusercontent.com/127047656/230963236-5b73e6e5-565c-4554-9093-a6985edac8ec.png)
 
 - Explique, si existen. las discrepancias entre el etiquetado manual y la detección automática.
+
+  Tal y como se puede observar en la gráfica, los resultados obtenidos a través de nuestro sistema y los impuestos manualmente son muy parecidos, llegando a tener     	 mínimos errores en la posición en la que empieza o acaba la voz. Estas dicrepancias se pueden deber a alguno de los umbrales impuestos en el programa o simplemente     no hemos tenido suficiente precisión al etiquetar manualmente la voz y el sistema es capaz de detectarlo mejor de lo que lo hacemos nosotros mismos. 
 
 - Evalúe los resultados sobre la base de datos `db.v4` con el script `vad_evaluation.pl` e inserte a 
   continuación las tasas de sensibilidad (*recall*) y precisión para el conjunto de la base de datos (sólo
   el resumen).
+<img width="552" alt="final_resultat" src="https://user-images.githubusercontent.com/125394222/230933168-06b4f3e6-8b56-4312-93b8-678770c12aa1.PNG">
 
 
 ### Trabajos de ampliación
@@ -169,11 +192,28 @@ Ejercicios
 - Si ha desarrollado el algoritmo para la cancelación de los segmentos de silencio, inserte una gráfica en
   la que se vea con claridad la señal antes y después de la cancelación (puede que `wavesurfer` no sea la
   mejor opción para esto, ya que no es capaz de visualizar varias señales al mismo tiempo).
+  
+  ![WhatsApp Image 2023-04-10 at 20 57 43](https://user-images.githubusercontent.com/127047656/230985808-c720a4e0-aa90-447b-9b20-86d8f6cafb41.jpeg)
+
 
 #### Gestión de las opciones del programa usando `docopt_c`
 
 - Si ha usado `docopt_c` para realizar la gestión de las opciones y argumentos del programa `vad`, inserte
   una captura de pantalla en la que se vea el mensaje de ayuda del programa.
+  
+  Hemos usado `docopt_c`para realizar la gestión de los valores:
+  
+  	-alfa0, con un valor default de 3
+	
+	-alfa1, con un valor default de 2
+	
+	-count_ms, con un valor default de 15
+	
+	-count_mv, con un valor default de 5
+	
+	-init_frames, con un valor default de 7
+	
+<img width="547" alt="ampliació_docopt" src="https://user-images.githubusercontent.com/125394222/230933470-7b1a5f6d-c49b-432a-b138-9fc53a219a9a.PNG">
 
 
 ### Contribuciones adicionales y/o comentarios acerca de la práctica

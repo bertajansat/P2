@@ -192,6 +192,9 @@ Con todas las modificaciones anteriormente mencionadas, hemos obenido una F-scor
 - Si ha desarrollado el algoritmo para la cancelación de los segmentos de silencio, inserte una gráfica en
   la que se vea con claridad la señal antes y después de la cancelación (puede que `wavesurfer` no sea la
   mejor opción para esto, ya que no es capaz de visualizar varias señales al mismo tiempo).
+  
+  ![WhatsApp Image 2023-04-10 at 20 57 43](https://user-images.githubusercontent.com/127047656/230985808-c720a4e0-aa90-447b-9b20-86d8f6cafb41.jpeg)
+
 
 #### Gestión de las opciones del programa usando `docopt_c`
 

@@ -161,20 +161,23 @@ Ejercicios
 - Complete el código de los ficheros de la práctica para implementar un detector de actividad vocal en
   tiempo real tan exacto como sea posible. Tome como objetivo la maximización de la puntuación-F `TOTAL`.
 
-Primeramente hemos utilizado un primer umbral, p0, que ha sido la potencia media durante las N_init primeras muestras (en nuestor caso lo hemos nombrado como count_init). Luego hemos puesto un segundo umbral, k1, que nos dará la decisión de si la trama se corresponde a voz o silencio se basa en comparar el nivel de potencia, la elección más razonable ha sido k1 = p0 + alfa0.
+Primeramente hemos usado un primer umbral, p0, que ha sido la potencia media durante las N_init primeras muestras (en nuestor caso lo hemos nombrado como count_init). Luego hemos puesto un segundo umbral, k1, que nos dará la decisión de si la trama se corresponde a voz o silencio, el cual se basa en comparar el nivel de potencia. La decisión más razonable ha sido k1 = p0 + alfa0.
 
 Para mejorar el sistem de detección de voz, hemos puesto una cierta histéresis en la decisión, para ello aplicamos otro umbral, k2 = k1 + alfa0.
 
-Los valores alfa0 y alfa1 más optimos han sido 3 y 2.
+Los valores alfa0 y alfa1 óptimos han sido 3 y 2.
 
-Además hemos utilizado los cruces por zero (zcr) para decidir si una trama es voz o no-
+Además hemos utilizado los cruces por zero (zcr) para decidir si una trama es voz o no lo es. 
 
-Con todas las modificaciones anteriormente dichas, hemos obenido una F-score de 93,103% en los datos db.v4.
+Con todas las modificaciones anteriormente mencionadas, hemos obenido una F-score de 93.103% en los datos db.v4.
 
 - Inserte una gráfica en la que se vea con claridad la señal temporal, el etiquetado manual y la detección
   automática conseguida para el fichero grabado al efecto. 
+  ![image](https://user-images.githubusercontent.com/127047656/230963236-5b73e6e5-565c-4554-9093-a6985edac8ec.png)
 
 - Explique, si existen. las discrepancias entre el etiquetado manual y la detección automática.
+
+  Tal y como se puede observar en la gráfica, los resultados obtenidos a través de nuestro sistema y los impuestos manualmente son muy parecidos, llegando a tener     	 mínimos errores en la posición en la que empieza o acaba la voz. Estas dicrepancias se pueden deber a alguno de los umbrales impuestos en el programa o simplemente     no hemos tenido suficiente precisión al etiquetar manualmente la voz y el sistema es capaz de detectarlo mejor de lo que lo hacemos nosotros mismos. 
 
 - Evalúe los resultados sobre la base de datos `db.v4` con el script `vad_evaluation.pl` e inserte a 
   continuación las tasas de sensibilidad (*recall*) y precisión para el conjunto de la base de datos (sólo

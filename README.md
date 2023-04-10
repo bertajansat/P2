@@ -161,6 +161,16 @@ Ejercicios
 - Complete el código de los ficheros de la práctica para implementar un detector de actividad vocal en
   tiempo real tan exacto como sea posible. Tome como objetivo la maximización de la puntuación-F `TOTAL`.
 
+Primeramente hemos utilizado un primer umbral, p0, que ha sido la potencia media durante las N_init primeras muestras (en nuestor caso lo hemos nombrado como count_init). Luego hemos puesto un segundo umbral, k1, que nos dará la decisión de si la trama se corresponde a voz o silencio se basa en comparar el nivel de potencia, la elección más razonable ha sido k1 = p0 + alfa0.
+
+Para mejorar el sistem de detección de voz, hemos puesto una cierta histéresis en la decisión, para ello aplicamos otro umbral, k2 = k1 + alfa0.
+
+Los valores alfa0 y alfa1 más optimos han sido 3 y 2.
+
+Además hemos utilizado los cruces por zero (zcr) para decidir si una trama es voz o no-
+
+Con todas las modificaciones anteriormente dichas, hemos obenido una F-score de 93,103% en los datos db.v4.
+
 - Inserte una gráfica en la que se vea con claridad la señal temporal, el etiquetado manual y la detección
   automática conseguida para el fichero grabado al efecto. 
 
@@ -169,6 +179,7 @@ Ejercicios
 - Evalúe los resultados sobre la base de datos `db.v4` con el script `vad_evaluation.pl` e inserte a 
   continuación las tasas de sensibilidad (*recall*) y precisión para el conjunto de la base de datos (sólo
   el resumen).
+<img width="552" alt="final_resultat" src="https://user-images.githubusercontent.com/125394222/230933168-06b4f3e6-8b56-4312-93b8-678770c12aa1.PNG">
 
 
 ### Trabajos de ampliación
@@ -183,6 +194,14 @@ Ejercicios
 
 - Si ha usado `docopt_c` para realizar la gestión de las opciones y argumentos del programa `vad`, inserte
   una captura de pantalla en la que se vea el mensaje de ayuda del programa.
+  
+  Hemos usado `docopt_c`para realizar la gestión de los valores:
+  	-alfa0, con un valor default de 3
+	-alfa1, con un valor default de 2
+	-count_ms, con un valor default de 15
+	-count_mv, con un valor default de 5
+	-init_frames, con un valor default de 7
+<img width="547" alt="ampliació_docopt" src="https://user-images.githubusercontent.com/125394222/230933470-7b1a5f6d-c49b-432a-b138-9fc53a219a9a.PNG">
 
 
 ### Contribuciones adicionales y/o comentarios acerca de la práctica

@@ -197,10 +197,15 @@ Con todas las modificaciones anteriormente dichas, hemos obenido una F-score de 
   
   Hemos usado `docopt_c`para realizar la gestión de los valores:
   	-alfa0, con un valor default de 3
+	
 	-alfa1, con un valor default de 2
+	
 	-count_ms, con un valor default de 15
+	
 	-count_mv, con un valor default de 5
+	
 	-init_frames, con un valor default de 7
+	
 <img width="547" alt="ampliació_docopt" src="https://user-images.githubusercontent.com/125394222/230933470-7b1a5f6d-c49b-432a-b138-9fc53a219a9a.PNG">
 
 

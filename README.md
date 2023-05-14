@@ -182,6 +182,7 @@ Con todas las modificaciones anteriormente mencionadas, hemos obenido una F-scor
 - Evalúe los resultados sobre la base de datos `db.v4` con el script `vad_evaluation.pl` e inserte a 
   continuación las tasas de sensibilidad (*recall*) y precisión para el conjunto de la base de datos (sólo
   el resumen).
+  
 ![image](https://github.com/bertajansat/P2/assets/125394222/9f1a7ed2-696c-4ef8-8c5a-db4deb3fef24)
 
 

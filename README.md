@@ -183,6 +183,8 @@ Con todas las modificaciones anteriormente mencionadas, hemos obenido una F-scor
   continuación las tasas de sensibilidad (*recall*) y precisión para el conjunto de la base de datos (sólo
   el resumen).
 <img width="552" alt="final_resultat" src="https://user-images.githubusercontent.com/125394222/230933168-06b4f3e6-8b56-4312-93b8-678770c12aa1.PNG">
+![image](https://github.com/bertajansat/P2/assets/125394222/01c45fb4-8293-4e6f-8423-96e746e8a484)
+
 
 
 ### Trabajos de ampliación

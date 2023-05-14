@@ -23,11 +23,13 @@ float compute_am(const float *x, unsigned int N) {
 
 float compute_zcr(const float *x, unsigned int N, float fm) {
         int contador=0;
-    for(unsigned int n=1;n<N;n++){
+        float zcr = 0;
+    for(unsigned int n=1; n < N; n++){
         if ((x[n]*x[n-1])<0){
-          contador++;;
+          contador++;
         }
     }
-   return (fm/2)*(1/(N-1)*contador);
+    zcr=fm/(2.0*(N-1.0))*contador;
+   return zcr;
 
 }
